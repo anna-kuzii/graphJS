@@ -7,10 +7,11 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var port = 3001;
 
 var app = express();
-app.listen(3001, function () {
-    console.log('Ready');
+app.listen(port, function () {
+    console.log('Server listening on port ' + port + '…');
 });
 
 // view engine setup
