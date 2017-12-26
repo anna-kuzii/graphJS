@@ -19,7 +19,9 @@ function Graph(vertexList) {
     }
 }
 
-function addEdge(v,w) {
+function addEdge() {
+    var v = document.getElementById('firstVert').value;
+    var w = document.getElementById('secondVert').value;
     this.adj[v].push(w);
     this.adj[w].push(v);
     this.edges++;
@@ -71,20 +73,32 @@ function pathTo(v) {
     for (var i = v; i !== source; i = this.edgeTo[i]) {
         path.push(i);
     }
-   path.push(source);
+    path.push(source);
     return path;
 }
 function hasPathTo(v) {
     return this.marked[v];
 }
 
-function submitGraph() {
+function submitMatrix() {
     var enteredGraph = document.getElementsByClassName('vertex-list')[0].value;
+    var selects = document.querySelectorAll('#add-edges select');
 
     var g = new Graph(enteredGraph);
     g.showGraph();
-}
 
+    selects.forEach(function (item) {
+
+        g.vertexList.forEach(function (element) {
+            var opt = document.createElement('option');
+            opt.innerHTML = element;
+            item.appendChild(opt);
+        });
+
+    });
+
+
+}
 
 
 // g.addEdge(0,1);

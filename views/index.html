@@ -7,8 +7,15 @@
 <body>
 <p>Введіть вершини графу через кому</p>
 <input class="vertex-list" placeholder="v1, v2, ...">
-<input type="button" value="submit" onclick="submitGraph()">
-<table class="adjacency-matrix-field-input">
-</table>
+<input type="button" value="submit" onclick="submitMatrix()">
+<form id="add-edges">
+    <select id="firstVert">
+        <option disabled>Виберіть першу вершини</option>
+    </select>
+    <select id="secondVert">
+        <option disabled>Виберіть другу вершини</option>
+    </select>
+    <input type="button" value="додати ребро" onclick="addEdge()">
+</form>
 </body>
 </html>
