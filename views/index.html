@@ -2,20 +2,23 @@
 <html>
 <head>
     <title>Graph</title>
+    <script type="text/javascript" src="/javascripts/graph.js"></script>
     <script type="text/javascript" src="/javascripts/script.js"></script>
+    <script src="/vivagraphjs/vivagraph.js"></script>
 </head>
 <body>
 <p>Введіть вершини графу через кому</p>
-<input class="vertex-list" placeholder="v1, v2, ...">
-<input type="button" value="submit" onclick="submitMatrix()">
+<input id="vertex-list" placeholder="v1, v2, ...">
+<input type="button" value="submit" onclick="submitGraph()">
 <form id="add-edges">
-    <select id="firstVert">
-        <option disabled>Виберіть першу вершини</option>
-    </select>
-    <select id="secondVert">
-        <option disabled>Виберіть другу вершини</option>
-    </select>
-    <input type="button" value="додати ребро" onclick="addEdge()">
+    <label for="firstVert">Виберіть першу вершини</label>
+    <select id="firstVert"></select>
+    <label for="secondVert">Виберіть другу вершини</label>
+    <select id="secondVert"></select>
+    <input type="button" value="додати ребро" onclick="addOneEdge()">
+    <input type="button" value="намалювати граф" onclick="drowGraph()">
+
+    <div id="graphDiv"></div>
 </form>
 </body>
 </html>
