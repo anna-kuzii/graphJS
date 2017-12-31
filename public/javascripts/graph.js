@@ -1,5 +1,5 @@
 function Graph(vertexList) {
-    this.vertexList = vertexList.split(',');
+    this.vertexList = vertexList.trim().split(',');
     this.vertices = this.vertexList.length;
     this.edges = 0;
     this.adj = [];
@@ -8,24 +8,33 @@ function Graph(vertexList) {
         this.adj[i].push("");
     }
     this.addEdge = addEdge;
+    this.getVertexIndexByName = getVertexIndexByName;
     this.showGraph = showGraph;
-    this.bfs = bfs;
+    this.bfsByIndex = bfsByIndex;
+    this.bfsByName = bfsByName;
     this.edgeTo = [];
     this.marked = [];
-    this.pathTo = pathTo;
+    this.pathToByIndex = pathToByIndex;
+    this.pathToByName = pathToByName;
     this.hasPathTo = hasPathTo;
+    this.printPath = printPath;
     for (var j = 0; j < this.vertices; ++j) {
         this.marked[j] = false;
     }
 }
 
-function addEdge(v, w) {
-    var indexV = this.vertexList.indexOf(v);
-    var indexW = this.vertexList.indexOf(w);
+function getVertexIndexByName(name) {
+    return this.vertexList.indexOf(name);
+}
+
+function addEdge(vName, wName) {
+    var indexV = this.getVertexIndexByName(vName);
+    var indexW = this.getVertexIndexByName(wName);
+
     this.adj[indexV].push(indexW);
     this.adj[indexW].push(indexV);
 
-    console.log('adjd', this.adj);
+    console.log('adj', this.adj);
     this.edges++;
 }
 
@@ -45,29 +54,34 @@ function showGraph() {
     }
 }
 
-function bfs(s) {
+function bfsByIndex(s) {
     var queue = [];
-    var w;
     this.marked[s] = true;
-    queue.push(s); // add to back of queue
+    queue.unshift(s);
     while (queue.length > 0) {
-        var v = queue.shift(); // remove from front of queue
-        if (v !== undefined) {
-            console.log("Visited vertex: " + v);
+        var v = queue.shift();
+        if (typeof(v) == "string") {
+            return;
         }
-        for (var j = 0; j < this.adj[v].length; ++j) {
-            w = this.adj[v][j];
-            if (w !== "" && !this.marked[w]) {
+        console.log('Visited vertex: ' + v);
+
+        for (var i = 0; i < this.adj[v].length; ++i) {
+            var w = this.adj[v][i];
+            if (!this.marked[w]) {
                 this.edgeTo[w] = v;
                 this.marked[w] = true;
-                queue.push(w);
+                queue.unshift(w);
             }
         }
     }
 }
 
-function pathTo(v) {
-    var source = 0;
+function bfsByName(sName) {
+    var indexS = this.getVertexIndexByName(sName);
+    return this.bfsByIndex(indexS);
+}
+
+function pathToByIndex(v, source) {
     if (!this.hasPathTo(v)) {
         return undefined;
     }
@@ -79,6 +93,23 @@ function pathTo(v) {
     return path;
 }
 
+function pathToByName(vName, sourceName) {
+    var vIndex = this.getVertexIndexByName(vName);
+    var sourceIndex = this.getVertexIndexByName(sourceName);
+
+    return this.pathToByIndex(vIndex, sourceIndex);
+}
+
 function hasPathTo(v) {
     return this.marked[v];
+}
+
+function printPath(paths) {
+    if(paths == undefined){
+        console.log('incorrect path')
+    }
+    while (paths.length > 0) {
+        var index = paths.pop();
+        console.log(this.vertexList[index] + '->');
+    }
 }
