@@ -44,7 +44,7 @@ function addEdgeGraph() {
     g.addEdge(valueV1, valueV2);
     vg.addLink(valueV1, valueV2);
 
-    for (var i=0; i < v2.length; i++) {
+    for (var i = 0; i < v2.length; i++) {
         v2[i].style.display = 'block';
     }
 }
@@ -58,7 +58,7 @@ function onChangeFirstVert(item) {
     var selectedValue = item.value,
         v2 = document.getElementById("secondVert");
 
-    for (var i=0; i < v2.length; i++) {
+    for (var i = 0; i < v2.length; i++) {
         if (v2[i].value === selectedValue) {
             v2[i].style.display = 'none';
         }
@@ -68,8 +68,15 @@ function onChangeFirstVert(item) {
 function drawGraph() {
     var graphics = Viva.Graph.View.svgGraphics(),
         nodeSize = g.vertices,
+        layout = Viva.Graph.Layout.forceDirected(vg, {
+            springLength: 100,
+            springCoeff: 0.0002,
+            dragCoeff: 0.08,
+            gravity: -0.6
+        }),
         renderer = Viva.Graph.View.renderer(vg, {
             container: document.getElementById('graphDiv'),
+            layout: layout,
             graphics: graphics
         });
 

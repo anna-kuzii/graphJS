@@ -2,7 +2,8 @@ html,
 body,
 svg,
 form,
-div {
+div,
+.graph-visualization {
   height: 100%;
 }
 
