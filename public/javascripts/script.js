@@ -31,7 +31,7 @@ function submitGraph() {
 
 function addNodeVG() {
     for (var i = 0; i < g.vertices; i++) {
-        vg.addNode(i, g.vertexList[i]);
+        vg.addNode(g.vertexList[i]);
     }
 }
 
@@ -43,11 +43,26 @@ function addEdgeGraph() {
 
     g.addEdge(valueV1, valueV2);
     vg.addLink(valueV1, valueV2);
+
+    for (var i=0; i < v2.length; i++) {
+        v2[i].style.display = 'block';
+    }
 }
 
 function clear(el) {
     el.value = null;
     return;
+}
+
+function onChangeFirstVert(item) {
+    var selectedValue = item.value,
+        v2 = document.getElementById("secondVert");
+
+    for (var i=0; i < v2.length; i++) {
+        if (v2[i].value === selectedValue) {
+            v2[i].style.display = 'none';
+        }
+    }
 }
 
 function drawGraph() {
@@ -63,7 +78,7 @@ function drawGraph() {
             svgText = Viva.Graph.svg('text')
                 .attr('y', '-4px')
                 .attr('x', '-' + (nodeSize / 4) + 'px')
-                .text(node.data),
+                .text(node.id),
 
             img = Viva.Graph.svg('rect')
                 .attr('width', nodeSize)

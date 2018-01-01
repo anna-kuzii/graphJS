@@ -28,14 +28,24 @@ function getVertexIndexByName(name) {
 }
 
 function addEdge(vName, wName) {
-    var indexV = this.getVertexIndexByName(vName);
-    var indexW = this.getVertexIndexByName(wName);
+    var self = this;
 
-    this.adj[indexV].push(indexW);
-    this.adj[indexW].push(indexV);
+    var pushToAdj = function (indexV, indexW) {
+        var item = self.adj[indexV];
+
+        if(item.indexOf(indexW) === -1){
+            item.push(indexW);
+        }
+    };
+
+    var indexV = self.getVertexIndexByName(vName);
+    var indexW = self.getVertexIndexByName(wName);
+
+    pushToAdj(indexV, indexW);
+    pushToAdj(indexW, indexV);
 
     console.log('adj', this.adj);
-    this.edges++;
+    self.edges++;
 }
 
 function showGraph() {

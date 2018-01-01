@@ -10,11 +10,11 @@
 <body>
 <p>Введіть вершини графу через кому</p>
 <input id="vertex-list" placeholder="v1, v2, ...">
-<input type="button" value="submit" onclick="submitGraph()">
+<input type="button" value="Додати вершини" onclick="submitGraph()">
 <input type="button" value="setDefault" onclick="setDefaultGraph()">
 <form id="add-edges">
     <label for="firstVert">Виберіть першу вершини</label>
-    <select id="firstVert"></select>
+    <select id="firstVert" onchange="onChangeFirstVert(this)"></select>
     <label for="secondVert">Виберіть другу вершини</label>
     <select id="secondVert"></select>
     <input type="button" value="додати ребро" onclick="addEdgeGraph()">
