@@ -1,106 +1,118 @@
-function Graph(vertexList) {
-    this.vertexList = vertexList.split(',');
-    this.vertices = this.vertexList.length;
-    this.edges = 0;
-    this.adj = [];
-    for (var i = 0; i < this.vertices; ++i) {
-        this.adj[i] = [];
-        this.adj[i].push("");
-    }
-    this.addEdge = addEdge;
-    this.showGraph = showGraph;
-    this.bfs = bfs;
-    this.edgeTo = [];
-    this.marked = [];
-    this.pathTo = pathTo;
-    this.hasPathTo = hasPathTo;
-    for (var j = 0; j < this.vertices; ++j) {
-        this.marked[j] = false;
-    }
-}
+var g, vg;
 
-function addEdge(v,w) {
-    this.adj[v].push(w);
-    this.adj[w].push(v);
-    this.edges++;
-}
-
-function showGraph() {
-    var visited = [];
-    for (var i = 0; i < this.vertices; ++i) {
-        console.log(this.vertexList[i] + " -> ");
-        visited.push(this.vertexList[i]);
-        for (var j = 0; j < this.vertices; ++j) {
-            if (this.adj[i][j] !== undefined) {
-                if (visited.indexOf(this.vertexList[j]) < 0) {
-                    console.log(this.vertexList[j] + ' ');
-                }
-            }
-        }
-        visited.pop();
-    }
-}
-
-function bfs(s) {
-    var queue = [];
-    var w;
-    this.marked[s] = true;
-    queue.push(s); // add to back of queue
-    while (queue.length > 0) {
-        var v = queue.shift(); // remove from front of queue
-        if (v !== undefined) {
-            console.log("Visited vertex: " + v);
-        }
-        for (var j = 0; j < this.adj[v].length; ++j) {
-            w = this.adj[v][j];
-            if (w !== "" && !this.marked[w]) {
-                this.edgeTo[w] = v;
-                this.marked[w] = true;
-                queue.push(w);
-            }
-        }
-    }
-}
-
-function pathTo(v) {
-    var source = 0;
-    if (!this.hasPathTo(v)) {
-        return undefined;
-    }
-    var path = [];
-    for (var i = v; i !== source; i = this.edgeTo[i]) {
-        path.push(i);
-    }
-   path.push(source);
-    return path;
-}
-function hasPathTo(v) {
-    return this.marked[v];
+function setDefaultGraph() {
+    document.getElementById('vertex-list').value = 'v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10';
+    submitGraph();
 }
 
 function submitGraph() {
-    var enteredGraph = document.getElementsByClassName('vertex-list')[0].value;
+    var enteredGraph = document.getElementById('vertex-list');
+    var selects = document.querySelectorAll('#add-edges select');
 
-    var g = new Graph(enteredGraph);
-    g.showGraph();
+    if (!enteredGraph.value || !enteredGraph.value.trim()) {
+        clear(enteredGraph);
+        return;
+    }
+
+    g = new Graph(enteredGraph.value);
+    vg = Viva.Graph.graph();
+    addNodeVG();
+
+    selects.forEach(function (item) {
+        item.length = 0;
+
+        g.vertexList.forEach(function (element) {
+            var opt = document.createElement('option');
+            opt.innerHTML = element;
+            item.appendChild(opt);
+        });
+    });
 }
 
+function addNodeVG() {
+    for (var i = 0; i < g.vertices; i++) {
+        vg.addNode(g.vertexList[i]);
+    }
+}
+
+function addEdgeGraph() {
+    var v1 = document.getElementById("firstVert");
+    var v2 = document.getElementById("secondVert");
+    var valueV1 = v1.options[v1.selectedIndex].value;
+    var valueV2 = v2.options[v2.selectedIndex].value;
+
+    g.addEdge(valueV1, valueV2);
+    vg.addLink(valueV1, valueV2);
+
+    for (var i = 0; i < v2.length; i++) {
+        v2[i].style.display = 'block';
+    }
+}
+
+function clear(el) {
+    el.value = null;
+    return;
+}
+
+function onChangeFirstVert(item) {
+    var selectedValue = item.value,
+        v2 = document.getElementById("secondVert");
+
+    for (var i = 0; i < v2.length; i++) {
+        if (v2[i].value === selectedValue) {
+            v2[i].style.display = 'none';
+        }
+    }
+}
+
+function drawGraph() {
+    var graphics = Viva.Graph.View.svgGraphics(),
+        nodeSize = g.vertices,
+        layout = Viva.Graph.Layout.forceDirected(vg, {
+            springLength: 100,
+            springCoeff: 0.0002,
+            dragCoeff: 0.08,
+            gravity: -0.6
+        }),
+        renderer = Viva.Graph.View.renderer(vg, {
+            container: document.getElementById('graphDiv'),
+            layout: layout,
+            graphics: graphics
+        });
+
+    graphics.node(function (node) {
+        var ui = Viva.Graph.svg('g'),
+            svgText = Viva.Graph.svg('text')
+                .attr('y', '-4px')
+                .attr('x', '-' + (nodeSize / 4) + 'px')
+                .text(node.id),
+
+            img = Viva.Graph.svg('rect')
+                .attr('width', nodeSize)
+                .attr('height', nodeSize)
+                .attr('fill', '#00a2e8');
+
+        ui.append(svgText);
+        ui.append(img);
+
+        return ui;
+    }).placeNode(
+        function (nodeUI, pos) {
+            nodeUI.attr('transform', 'translate(' + (pos.x - nodeSize / 2)
+                + ',' + (pos.y - nodeSize / 2) + ')');
+        });
 
 
-// g.addEdge(0,1);
-// g.addEdge(0,2);
-// g.addEdge(1,3);
-// g.addEdge(2,4);
-// g.bfs(0);
+    renderer.run();
+}
 
+function findShortPath() {
+    var v1 = document.getElementById("firstVertShortPath");
+    var v2 = document.getElementById("secondVertShortPath");
+    var valueV1 = v1.options[v1.selectedIndex].value;
+    var valueV2 = v2.options[v2.selectedIndex].value;
 
-// var vertex = 4;
-// var paths = g.pathTo(vertex);
-// while (paths.length > 0) {
-//     if (paths.length > 1) {
-//         console.log(paths.pop() + '-');
-//     }
-//     else {
-//         console.log(paths.pop());
-//     }
-// }
+    g.bfsByName(valueV1);
+    var paths = g.pathToByName(valueV2, valueV1);
+    g.printPath(paths);
+}
